@@ -17,6 +17,7 @@ public class Webconfig {
                                 "https://phoenix-hotel.vercel.app",
                                 "https://phoenix-hotel-booking-website.vercel.app"
                         )
+                        .allowedOriginPatterns("*")
                         .allowedMethods("*")
                         .allowedHeaders("*");
             }
