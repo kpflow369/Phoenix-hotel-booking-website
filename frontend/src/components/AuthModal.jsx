@@ -17,33 +17,51 @@ export default function AuthModal({ isOpen, onClose }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.phone) {
-      toast.error('Phone number is required for WhatsApp notifications');
-      return;
-    }
-    
-    setLoading(true);
-    try {
-      if (isLogin) {
-        // Mock Login
-        login({ id: 1, name: formData.name || 'User', email: formData.email, role: 'user', token: 'mock-token' });
+  e.preventDefault();
+
+  if (!formData.phone) {
+    toast.error('Phone number is required');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const userData = {
+      id: 1,
+      name: formData.name || 'User',
+      email: formData.email,
+      role: 'user',
+      token: 'mock-token'
+    };
+
+    login(userData);
+
+    if (isLogin) {
+      try {
         await notifyLogin(formData.phone, formData.name || 'User');
-        toast.success('Successfully logged in! New login WhatsApp alert triggered.');
-      } else {
-        // Mock Register
-        login({ id: 1, name: formData.name || 'User', email: formData.email, role: 'user', token: 'mock-token' });
-        await notifyRegistration(formData.phone, formData.name || 'User');
-        toast.success('Successfully registered! Registration WhatsApp alert triggered.');
+      } catch (err) {
+        console.log('WhatsApp notification failed:', err);
       }
-    } catch (error) {
-      console.error(error);
-      toast.error('Registered successfully, but failed to send WhatsApp notification (Backend offline).');
-    } finally {
-      setLoading(false);
-      onClose(); // Ensure modal closes even if notification fails
+
+      toast.success('Successfully logged in!');
+    } else {
+      try {
+        await notifyRegistration(formData.phone, formData.name || 'User');
+      } catch (err) {
+        console.log('WhatsApp notification failed:', err);
+      }
+
+      toast.success('Successfully registered!');
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error('Operation failed. Please try again.');
+  } finally {
+    setLoading(false);
+    onClose();
+  }
+};
 
   return (
     <div className="auth-modal-overlay" onClick={onClose}>
