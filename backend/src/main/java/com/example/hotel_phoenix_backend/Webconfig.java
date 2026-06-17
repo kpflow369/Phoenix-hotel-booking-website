@@ -13,8 +13,12 @@ public class Webconfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://phoenix-hotel.vercel.app")
-                        .allowedMethods("*");
+                        .allowedOrigins(
+                                "https://phoenix-hotel.vercel.app",
+                                "https://phoenix-hotel-booking-website.vercel.app"
+                        )
+                        .allowedMethods("*")
+                        .allowedHeaders("*");
             }
         };
     }
